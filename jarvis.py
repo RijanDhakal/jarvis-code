@@ -3,6 +3,7 @@ import pyttsx3
 import datetime
 import webbrowser
 import wikipedia
+import google.generativeai as genai
 
 # setting male voice [0] / for female [1]
 engine = pyttsx3.init('sapi5')
@@ -35,7 +36,7 @@ def takeCommand():
         query = r.recognize_google(audio)
         print(f"Command : {query}\n")
     except Exception as e:
-        print("Could not request results from Google Speech Recognition service" , e )
+        print("Could not request results from Google Speech Recognition service")
         print("say that again please !!!")
     return query
 
@@ -43,12 +44,36 @@ def takeCommand():
 def wish_me():
     hour = (datetime.datetime.now().hour)
     if hour >= 0 and hour <= 12 :
-        speak("Good Morning sir , How are you doing ?")
+        speak("Good Morning sir")
     elif hour > 12 and hour <= 18:
-        speak("Good afternoon sir , How are you doing ?")
+        speak("Good afternoon sir")
     else:
-        speak("good evening sir , how are you doing ?")
+        speak("good evening sir ")
     speak("How can i help you ?")
+
+#some fav songs direct play
+song_video_map = {
+    "shikayat": "QxddU3sjVRY",  
+    "the night we met": "KtlgYxa6BMU",
+    "choo lo": "sFMRqxCexDk"
+}
+
+#Gemini API integration function
+def gemini(text):
+    genai.configure(api_key="AIzaSyAkL8pZd5MMG5papmw0NW7l2yzZJU0vuBw")
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    response = model.generate_content(text)
+    full_text = response.text
+    sentences = list(full_text.split('. '))
+    req = sentences[0]
+    if len(req) < 200 :
+        speak(req)
+    else:
+        req2 = req.split("\n")
+        speak(req2[0] + req2[1] + req2[3])
+
+
+
 
 wish_me()
 while True:
@@ -57,6 +82,9 @@ while True:
 
     if text is None:
         continue
+
+    if "here" in text:
+        speak("Yes boss , I am here")
 
     if "your" in text and "name" in text:
         speak("My name is Jarvis and i am developed by Sir Rijan Dhakal . How can i assist you today ?")
@@ -80,7 +108,7 @@ while True:
     elif "thank" in text:
         speak("You are welcome boss")
     
-    elif "exit" in text:
+    elif "leave" in text:
         speak("Good bye boss , have a wonderful time.")
         exit()
     
@@ -110,9 +138,23 @@ while True:
     elif "play" in text or "music" in text:
         speak("which song you want to listen boss")
         song = takeCommand().lower()
-        speak(f"playing {song}")
-        webbrowser.open(f"https://www.youtube.com/results?search_query={song.replace(' ', '+')}")
+        if song in song_video_map:
+            video_id = song_video_map[song]
+            speak(f"Playing {song}.")
+            webbrowser.open(f"https://www.youtube.com/watch?v={video_id}")
+        else:
+            speak(f"playing {song}")
+            webbrowser.open(f"https://www.youtube.com/results?search_query={song.replace(' ', '+')}")
 
-
+    elif "ai" in text:
+        speak("Opening Gemini")
+        while True:
+            speak("Tell what you want to search ")
+            prompt = takeCommand().lower()
+            if not prompt or "exit" in prompt:
+                exit()
+            else:
+                gemini(prompt)
+        
     else:
         continue
