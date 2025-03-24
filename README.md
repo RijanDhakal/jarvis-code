@@ -1,1 +1,1 @@
-
+This is a Jarvis voice assistant made on python that is capable of opening yt , fb , insta as well as play some of my listed song. It can also directly get data / research from geminin and devliver us answer. It is begginer friendly and while building this project , I enjoyed alot.
