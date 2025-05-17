@@ -53,9 +53,8 @@ def wish_me():
 
 #some fav songs direct play
 song_video_map = {
-    "shikayat": "QxddU3sjVRY",  
-    "the night we met": "KtlgYxa6BMU",
-    "choo lo": "sFMRqxCexDk"
+    # song name with yt song ID , The yt search one is good but this one is for optimised songs
+    "the night we met": "KtlgYxa6BMU"
 }
 
 #Gemini API integration function
